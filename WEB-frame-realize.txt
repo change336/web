@@ -1,0 +1,17 @@
+web框架在此处主要用于对aiohttp库做更高层次的封装，从简单的WSGI接口到一个复杂的web framework，本质上还是对request请求对象和response响应对象的处理，可以将这个过程想象成工厂中的一条流水线生产产品，request对象就是流水线的原料，这个原料在经过一系列的加工后，生成一个response对象返回给浏览器。
+
+具体到代码中去看，这条流水线的过程如下
+
+app.py中注册所有处理函数、初始化jinja2、添加静态文件路径
+
+创建服务器监听线程
+
+监听线程收到一个request请求
+
+经过几个拦截器(middlewares)的处理(app.py中的app = web.Application..这条语句指定)
+
+调用RequestHandler实例中的call方法；再调用call方法中的post或者get方法
+
+调用响应的URL处理函数，并返回结果
+
+response_factory在拿到经URL处理函数返回过来的对象，经过一系列类型判断后，构造出正确web.Response对象，返回给客户端

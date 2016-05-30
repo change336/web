@@ -105,18 +105,18 @@ async def response_factory(app, handler):
         logging.info('Response handler...')
 		#调用handler来处理url请求，并返回响应结果
         r = await handler(request)
-        if isinstance(r, web.StreamResponse):
+        if isinstance(r,web.StreamResponse):
 		#若响应结果为streamResponse，直接返回
 		#StreamResponse是aiohttp定义response的基类，即所有响应类型都继承该类
 		#StreamResponse主要为流式数据而设计，不懂
             return r
         # # 若响应结果为字节流,则将其作为应答的body部分,并设置响应类型为流型
-		if isinstance(r, bytes):
+        if isinstance(r,bytes):
             resp = web.Response(body=r)
             resp.content_type = 'application/octet-stream'
             return resp
          # 若响应结果为字符串
-		if isinstance(r, str):
+        if isinstance(r, str):
 			# 判断响应结果是否为重定向.若是,则返回重定向的地址
             if r.startswith('redirect:'):
                 return web.HTTPFound(r[9:])
@@ -133,7 +133,7 @@ async def response_factory(app, handler):
                 resp.content_type = 'application/json;charset=utf-8'
                 return resp
             # 存在对应模板的,则将套用模板,用request handler的结果进行渲染
-			else:
+            else:
                 resp = web.Response(body=app['__templating__'].get_template(template).render(**r).encode('utf-8'))
                 resp.content_type = 'text/html;charset=utf-8'
                 return resp
